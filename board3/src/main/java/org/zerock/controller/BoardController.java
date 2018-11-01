@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.zerock.domain.BoardAttachVO;
 import org.zerock.domain.BoardVO;
 import org.zerock.domain.PageParam;
 import org.zerock.service.BoardService;
@@ -57,10 +59,9 @@ public class BoardController {
 			vo.getAttachList().forEach(attach -> log.info(attach));
 		}
 		log.info("-----------------------------------------");
-		
 		service.register(vo);
-		rttr.addFlashAttribute("result", vo.getBno());
-		
+//		rttr.addFlashAttribute("result", vo.getBno());
+//		
 		return "redirect:/board/list";
 	}
 	
@@ -75,15 +76,24 @@ public class BoardController {
 		
 		rttr.addFlashAttribute("result", service.modify(vo) == 1? "SUCCESS":"FAIL");
 		
-		return "redirect:/board/list";
+		return "redirect:/board/list" + param.getLink();
 	}
 	
 	@PostMapping("/delete")
-	public String deletePOST(BoardVO vo, RedirectAttributes rttr) {
+	public String deletePOST(BoardVO vo, @ModelAttribute("pageObj") PageParam param, RedirectAttributes rttr) {
 		
 		rttr.addFlashAttribute("result", service.delete(vo) == 1? "SUCCESS":"FAIL");
 		
-		return "redirect:/board/list";
+		return "redirect:/board/list" + param.getLink();
+	}
+	
+	
+	@GetMapping(value="/getAttachList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody
+	public ResponseEntity<List<BoardAttachVO>> getAttachList(Long bno){
+		log.info("getAttachList" + bno);
+		
+		return new ResponseEntity<>(service.getAttachList(bno), HttpStatus.OK);
 	}
 	
 }

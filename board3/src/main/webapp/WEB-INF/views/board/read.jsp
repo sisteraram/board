@@ -60,8 +60,100 @@
                 <!-- /.col-lg-12 -->
             </div>
             <!-- /.row -->
+            <div class="bigPictureWrapper">
+            <div class="bigPicture">
+            </div>
+            </div>
+            
+            <style>
+.uploadResult{
+	width:100%;
+	background-color: gray;
+}
+.uploadResult ul{
+	display:flex;
+	flex-flow:row;
+	justify-content:center;
+	align-items:center;
+}
+.uploadResult ul li {
+	list-style:none;
+	padding:10px;
+}
+.uploadResult ul li img{
+	width:100px;
+}
+.uploadResult ul li span{
+	color:white;
+}
+
+.bigPictureWrapper{
+	position:absolute;
+	display:none;
+	justify-content:center;
+	align-items:center;
+	top:0%;
+	width:100%;
+	height:100%;
+	background-color:gray;
+	z-index:100;
+	background:rgba(255,255,255,0.5);
+}
+.bigPicture{
+	position:relative;
+	display:flex;
+	justify-content:center;
+	align-items:center;
+}
+
+.bigPicture img{
+	width:600px;
+}
+
+</style>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">Files</div>
+			<div class="panel-body">
+				<div class="uploadResult">
+					<ul>
+
+					</ul>
+				</div>
+				<!-- /.row (nested) -->
+			</div>
+			<!-- /.panel-body -->
+		</div>
+		<!-- /.panel -->
+	</div>
+	</div>
+            
 <%@include file="../includes/footer.jsp"%>
 
+
+<script>
+$(documnet).ready(function() {
+	(function() {
+		var bno = '<c:out value="${board.bno}"/>';
+		$.getJSON("/board/getAttachList", {bno:bno}, function(arr) {
+			console.log(arr);
+			
+			var str = "";
+			
+			$(arr).each(function(t, attach) {
+				if (attach.fileType) {
+					var fileCallPath = encodeURIComponent(attach.uploadPath + "/s_" + attach.uuid + "_" + attach.fileName);
+					
+					str += "<li data-path='" + attach.uploadPath + "' data-uuid='" + attach.uuid + "' data-filename='" + attach.fileName + "' data-type='" + attach.fileType + "' ><div>";
+				}
+			})
+		})
+	})
+})
+
+</script>
 </body>
 
 </html>

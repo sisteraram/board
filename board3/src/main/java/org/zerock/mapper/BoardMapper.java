@@ -11,7 +11,7 @@ public interface BoardMapper {
 	
 	public void register(BoardVO vo);
 	
-	//public void insertSelectKey(BoardVO vo);
+	public void insertSelectKey(BoardVO vo);
 	
 	public BoardVO read(BoardVO vo);
 	

@@ -26,22 +26,10 @@ public class BoardMapperTests {
 	private BoardService service;
 	
 	@Test
-	@Transactional
-	@Rollback(false)
-	public void testRegister() {
-		List<BoardAttachVO> attachList = new ArrayList<>();
-		BoardAttachVO attach = new BoardAttachVO();
+	public void test() {
+		
 		BoardVO vo = new BoardVO();
-		attach.setBno(vo.getBno());
-		attach.setFileName("hdfadsfaf");
-		attach.setFileType(true);
-		attach.setUploadPath("cccccccc");
-		attach.setUuid("dfdfqefdafadfadf");
-		attachList.add(attach);
-		vo.setTitle("되라고");
-		vo.setWriter("user02");
-		vo.setContent("좀");
-		vo.setAttachList(attachList);
+		BoardAttachVO attach = new BoardAttachVO();
 		
 		service.register(vo);
 	}

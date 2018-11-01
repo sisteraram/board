@@ -18,11 +18,11 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">
 			<select name='display' id='display'>
-				<option selected="selected">--</option>
-				<option value=10>10</option>
-				<option value=20>20</option>
-				<option value=50>50</option>
-				<option value=100>100</option>
+				<option value="" >--</option>
+				<option value=10 <c:out value="${pageObj.display == 10?'selected':''}"/>>10</option>
+				<option value=20 <c:out value="${pageObj.display == 20?'selected':''}"/>>20</option>
+				<option value=50 <c:out value="${pageObj.display == 50?'selected':''}"/>>50</option>
+				<option value=100 <c:out value="${pageObj.display == 100?'selected':''}"/>>100</option>
 			</select>
 			Board List</div>
 			<!-- /.panel-heading -->
@@ -51,16 +51,20 @@
 							</c:forEach>
 						</tbody>
 					</table>
-					<select id="search" name="type">
-					<option value=''>--</option>
-					<option value='t'>제목</option>
-					<option value='w'>작성자</option>
-					<option value='c'>내용</option>
-					<option value='tc'>제목+내용</option>
-					<option value='twc'>모두</option>
+					<form id="searchForm" action="/board/list" method="get">
+					<select name="type">
+					<option value='' <c:out value="${pageObj.type == null?'selected':''}"/>>--</option>
+					<option value='t' <c:out value="${pageObj.type == 't'?'selected':''}"/>>제목</option>
+					<option value='w' <c:out value="${pageObj.type == 'w'?'selected':''}"/>>작성자</option>
+					<option value='c' <c:out value="${pageObj.type == 'c'?'selected':''}"/>>내용</option>
+					<option value='tc' <c:out value="${pageObj.type == 'tc'?'selected':''}"/>>제목+내용</option>
+					<option value='twc' <c:out value="${pageObj.type == 'twc'?'selected':''}"/>>모두</option>
 					</select>
-					<input type="text" id="keyword" value="${pageObj.keyword}">
+					<input type="text" name="keyword" value="${pageObj.keyword}">
+					<input type="hidden" name = "page" value = "${pageObj.page}">
+					<input type="hidden" name = "display" value = "${pageObj.display}">
 					<button id="searchBtn" class="btn btn-primary">검색</button>
+					</form>
 				</div>
 				<!-- /.table-responsive -->
 			</div>
@@ -129,7 +133,8 @@
 
 <script>
 	$(document).ready(function() {
-
+		
+		var searchForm = $("#searchForm")
 		var actionForm = $("#actionForm");
 		var pagination = $(".pagination li a");
 		var page = ${pageObj.page};
@@ -138,16 +143,24 @@
 		var display = $("#display");
 		var searchBtn = $("#searchBtn");
 		
-		searchBtn.on("click", function(e) {
-			e.preventDefault();
-			typeValue = $("#search").val();
-			keywordValue = $("#keyword").val();
-			actionForm.find("input[name='type']").val(typeValue);
-			actionForm.find("input[name='keyword']").val(keywordValue);
-			$(".page").val(1);
-			actionForm.submit();
+		$("#searchBtn").on("click", function(e) {
 			
-		});
+			if (!searchForm.find("option:selected").val()) {
+				alert("검색종류를 선택하세요");
+				return false;
+			}
+			
+			if(!searchForm.find("input[name='keyword']").val()){
+				alert("키워드를 선택하세요");
+				return false;
+			}
+			
+			searchForm.find("input[name='page']").val(1);
+			e.preventDefault();
+			
+			searchForm.submit();
+			
+		})
 		
 		$(".board").on("click",function(e){
 			e.preventDefault();
@@ -185,6 +198,9 @@
 		display.on("change", function(e){
 			
 			var displayValue = display[0].value;
+			if (displayValue == null) {
+				displayValue = 10;
+			}
 			
 			actionForm.attr("action","/board/list");
 			actionForm.find("input[name='display']").val(displayValue);

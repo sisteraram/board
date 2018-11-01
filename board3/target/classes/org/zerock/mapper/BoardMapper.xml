@@ -20,9 +20,9 @@
   </insert>
   <insert id="insertSelectKey">
   <selectKey>
-  	select max(bno) + 1 from tbl_board
+  	select seq_board.nextval from dual
   </selectKey>
-  insert into tbl_board (title, writer, content) values (#{title}, #{writer}, #{content})
+  insert into tbl_board (bno, title, writer, content) values (#{bno}, #{title}, #{writer}, #{content})
   </insert>
   
   <update id="modify" parameterType="org.zerock.domain.BoardVO">

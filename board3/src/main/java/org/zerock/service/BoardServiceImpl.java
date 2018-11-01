@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+import org.zerock.domain.BoardAttachVO;
 import org.zerock.domain.BoardVO;
 import org.zerock.domain.PageParam;
 import org.zerock.mapper.BoardAttachMapper;
@@ -31,11 +32,13 @@ public class BoardServiceImpl implements BoardService {
 		return mapper.getList(param);
 	}
 	
+	
+	@Transactional
 	@Override
 	public void register(BoardVO vo) {
 		log.info("register...." + vo);
 		
-		mapper.register(vo);
+		mapper.insertSelectKey(vo);
 		if(vo.getAttachList() == null || vo.getAttachList().size() <= 0) {
 			return;
 		}
@@ -69,6 +72,12 @@ public class BoardServiceImpl implements BoardService {
 	public int count(PageParam param) {
 		
 		return mapper.count(param);
+	}
+
+	@Override
+	public List<BoardAttachVO> getAttachList(Long bno) {
+		log.info("get Attach list by bno" + bno);
+		return attachMapper.findByBno(bno);
 	}
 
 }
